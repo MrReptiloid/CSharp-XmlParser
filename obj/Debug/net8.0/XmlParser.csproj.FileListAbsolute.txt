@@ -1,0 +1,17 @@
+D:\Desktop\Work\Projects\XmlParser\bin\Debug\net8.0\XmlParser.exe
+D:\Desktop\Work\Projects\XmlParser\bin\Debug\net8.0\XmlParser.deps.json
+D:\Desktop\Work\Projects\XmlParser\bin\Debug\net8.0\XmlParser.runtimeconfig.json
+D:\Desktop\Work\Projects\XmlParser\bin\Debug\net8.0\XmlParser.dll
+D:\Desktop\Work\Projects\XmlParser\bin\Debug\net8.0\XmlParser.pdb
+D:\Desktop\Work\Projects\XmlParser\bin\Debug\net8.0\YamlDotNet.dll
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.csproj.AssemblyReference.cache
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.GeneratedMSBuildEditorConfig.editorconfig
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.AssemblyInfoInputs.cache
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.AssemblyInfo.cs
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.csproj.CoreCompileInputs.cache
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.csproj.CopyComplete
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.dll
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\refint\XmlParser.dll
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.pdb
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.genruntimeconfig.cache
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\ref\XmlParser.dll

@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "PU1eTkry5qq2uffc4sZFRn6m8Zz9Dra6vzwnqVaIdj2O3Zv1nwi7LdXMtQ9hX/SiSNs1RKDUtzuezWENrzoaqg==",
+  "success": true,
+  "projectFilePath": "D:\\Desktop\\Work\\Projects\\XmlParser\\XmlParser.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MrRep\\.nuget\\packages\\yamldotnet\\16.1.3\\yamldotnet.16.1.3.nupkg.sha512"
+  ],
+  "logs": []
+}

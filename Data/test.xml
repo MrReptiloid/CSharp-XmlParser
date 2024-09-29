@@ -1,0 +1,20 @@
+﻿<?xml version="1.1" encoding="UTF-8"?>
+<library>
+    <test>Test</test>
+    <book id="1">
+        <title>1984</title>
+        <author>George Orwell</author>
+        <year>1949</year>
+        <genre>Dystopian</genre>
+        <price>15.99</price>
+        <description>A novel about a dystopian future.</description>
+    </book>
+    <book id="2">
+        <title>Brave New World</title>
+        <author>Aldous Huxley</author>
+        <year>1932</year>
+        <genre>Science Fiction</genre>
+        <price>12.99</price>
+        <description>A novel about a futuristic society.</description>
+    </book>
+</library>
