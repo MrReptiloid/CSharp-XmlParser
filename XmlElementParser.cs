@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
 using XmlParser.Intefaces;
@@ -9,6 +10,7 @@ public class XmlElementParser : IXmlElementParser
 {
     private const string HeaderPattern = @"<\?xml\s(.*?)\?>";
     private const string OpenTagPattern = @"<(\w+)([^<>]*)>";
+    private const string SelfClosingTagPattern = @"<(\w+)([^>]*)/>"; 
     private const string CloseTagPattern = @"</(.*?)>";
     private const string TextPattern = @">(\S[^<>]+)<";
     private readonly IAttributeExtractor _attributeExtractor;
@@ -27,15 +29,30 @@ public class XmlElementParser : IXmlElementParser
         while (true)
         {
             Match headerMatch = Regex.Match(xmlData, HeaderPattern);
+            Match selfClosingTagMatch = Regex.Match(xmlData, SelfClosingTagPattern);
             Match openTagMatch = Regex.Match(xmlData, OpenTagPattern);
             Match closeTagMatch = Regex.Match(xmlData, CloseTagPattern);
             Match textMatch = Regex.Match(xmlData, TextPattern);
-            var minIndex = GetMinIndex(headerMatch, openTagMatch, closeTagMatch, textMatch);
+            var minIndex = GetMinIndex(
+                headerMatch,
+                selfClosingTagMatch,
+                openTagMatch,
+                closeTagMatch,
+                textMatch);
 
             if (minIndex == headerMatch.Index)
             {
                 headerAttributes = HeaderParse(headerMatch);
                 xmlData = xmlData.RemoveFirstOccurrence(headerMatch.Value);
+            }
+            else if (minIndex == selfClosingTagMatch.Index)
+            {
+                var element = TagParse(selfClosingTagMatch);
+                element.IsSelfClosing = true;
+                if (root is null) root = element;
+                else elements.Peek().Children.Add(element);
+                
+                xmlData = xmlData.RemoveFirstOccurrence(selfClosingTagMatch.Value);
             }
             else if (minIndex == closeTagMatch.Index)
             {
@@ -44,7 +61,12 @@ public class XmlElementParser : IXmlElementParser
             }
             else if (minIndex == openTagMatch.Index)
             {
-                OpenTagParse(openTagMatch, ref elements, ref root);
+                var element = TagParse(openTagMatch);
+                if (root is null) root = element;
+                else elements.Peek().Children.Add(element);
+
+                elements.Push(element);
+                
                 xmlData = xmlData.RemoveFirstOccurrence(openTagMatch.Groups[1].Value);
             }
             else if (minIndex == textMatch.Index)
@@ -66,25 +88,20 @@ public class XmlElementParser : IXmlElementParser
         return positionsList.Min();
     }
 
-    public List<Attribute> HeaderParse(Match headerContent)
-    {
-        return _attributeExtractor.ExtractAttributes(headerContent.Groups[0].Value);
-    }
+    public List<Attribute> HeaderParse(Match headerContent) => 
+        _attributeExtractor.ExtractAttributes(headerContent.Groups[0].Value);
     
-    public void OpenTagParse(Match tagContent, ref Stack<XmlElement> elements, ref XmlElement root)
+    public XmlElement TagParse(Match tagContent)
     {
         string tagName = tagContent.Groups[1].Value;
 
         var element = new XmlElement()
-        {   
+        {
             TagName = tagName,
             Attributes = _attributeExtractor.ExtractAttributes(tagContent.Groups[2].Value)
         };
-        
-        if (root is null) root = element;
-        else elements.Peek().Children.Add(element);
 
-        elements.Push(element);
+        return element;
     }
 
     public void TextParse(Match textMatch, ref Stack<XmlElement> elements)

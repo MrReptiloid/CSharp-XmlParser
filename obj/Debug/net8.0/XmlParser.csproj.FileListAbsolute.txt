@@ -15,3 +15,4 @@ D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\refint\XmlParser.dll
 D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.pdb
 D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.genruntimeconfig.cache
 D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\ref\XmlParser.dll
+D:\Desktop\Work\Projects\XmlParser\obj\Debug\net8.0\XmlParser.sourcelink.json

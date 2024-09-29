@@ -1,6 +1,7 @@
 ﻿<?xml version="1.1" encoding="UTF-8"?>
 <library>
     <test>Test</test>
+    <SelfClosingTest test="v2.2" />
     <book id="1">
         <title>1984</title>
         <author>George Orwell</author>

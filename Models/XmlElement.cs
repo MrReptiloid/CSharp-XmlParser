@@ -9,6 +9,7 @@ public class XmlElement
     public List<Attribute> Attributes { get; set; }
     public List<XmlElement> Children { get; set; } = new List<XmlElement>();
     public string? Value { get; set; }
+    public bool IsSelfClosing { get; set; }
 
     public static void Print(XmlElement element, int indent)
     {
