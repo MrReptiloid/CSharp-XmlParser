@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Text.RegularExpressions;
-using System.Xml;
-using System.Xml.Schema;
+﻿using System.Text.RegularExpressions;
 using XmlParser.Intefaces;
 
 namespace XmlParser;
@@ -33,65 +30,49 @@ public class XmlElementParser : IXmlElementParser
             Match openTagMatch = Regex.Match(xmlData, OpenTagPattern);
             Match closeTagMatch = Regex.Match(xmlData, CloseTagPattern);
             Match textMatch = Regex.Match(xmlData, TextPattern);
-            var minIndex = GetMinIndex(
+            var firstMatch = GetFirstMatch(
                 headerMatch,
                 selfClosingTagMatch,
                 openTagMatch,
                 closeTagMatch,
                 textMatch);
+            if (firstMatch is null)
+                return (headerAttributes, root);
+            
+            xmlData = xmlData.RemoveFirstOccurrence(firstMatch.Value);
 
-            if (minIndex == headerMatch.Index)
-            {
-                headerAttributes = HeaderParse(headerMatch);
-                xmlData = xmlData.RemoveFirstOccurrence(headerMatch.Value);
-            }
-            else if (minIndex == selfClosingTagMatch.Index)
+            if (firstMatch.Index == selfClosingTagMatch.Index)
             {
                 var element = TagParse(selfClosingTagMatch);
                 element.IsSelfClosing = true;
                 if (root is null) root = element;
                 else elements.Peek().Children.Add(element);
-                
-                xmlData = xmlData.RemoveFirstOccurrence(selfClosingTagMatch.Value);
             }
-            else if (minIndex == closeTagMatch.Index)
-            {
-                elements.Pop();
-                xmlData = xmlData.RemoveFirstOccurrence(closeTagMatch.Value);
-            }
-            else if (minIndex == openTagMatch.Index)
+            else if (firstMatch.Index == openTagMatch.Index)
             {
                 var element = TagParse(openTagMatch);
                 if (root is null) root = element;
                 else elements.Peek().Children.Add(element);
 
                 elements.Push(element);
-                
-                xmlData = xmlData.RemoveFirstOccurrence(openTagMatch.Groups[1].Value);
             }
-            else if (minIndex == textMatch.Index)
-            {
+            else if (firstMatch.Index == headerMatch.Index)
+                headerAttributes = HeaderParse(headerMatch);
+            else if (firstMatch.Index == textMatch.Index)
                 TextParse(textMatch, ref elements);
-                xmlData = xmlData.RemoveFirstOccurrence(textMatch.Groups[1].Value);
-            }
+            else if (firstMatch.Index == closeTagMatch.Index)
+                elements.Pop();
             else return (headerAttributes, root);
         }
     }
     
-    public int GetMinIndex(params Match[] matches)
-    {
-        List<int> positionsList = matches.Where(m => m.Success).Select(m => m.Index).ToList();
-        
-        if (positionsList.Count == 0)
-            return -1;
-        
-        return positionsList.Min();
-    }
+    private Match? GetFirstMatch(params Match[] matches) =>
+        matches.Where(m => m.Success).MinBy(m => m.Index);
 
-    public List<Attribute> HeaderParse(Match headerContent) => 
+    private List<Attribute> HeaderParse(Match headerContent) => 
         _attributeExtractor.ExtractAttributes(headerContent.Groups[0].Value);
     
-    public XmlElement TagParse(Match tagContent)
+    private XmlElement TagParse(Match tagContent)
     {
         string tagName = tagContent.Groups[1].Value;
 
@@ -104,7 +85,7 @@ public class XmlElementParser : IXmlElementParser
         return element;
     }
 
-    public void TextParse(Match textMatch, ref Stack<XmlElement> elements)
+    private void TextParse(Match textMatch, ref Stack<XmlElement> elements)
     {
         string textValue = textMatch.Groups[1].Value.Trim();
         if (textValue.Length > 0 && elements.Count > 0)
