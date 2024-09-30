@@ -1,13 +1,7 @@
-﻿namespace XmlParser;
+﻿namespace XmlParser.Models;
 
-public class XmlDocument
+public class XmlDocument(List<XmlAttribute> headerAttributes, XmlElement rootElement)
 {
-    public XmlDocument(List<Attribute> headerAttributes, XmlElement rootElement)
-    {
-        HeaderAttributes = headerAttributes;
-        RootElement = rootElement;
-    }
-
-    public List<Attribute> HeaderAttributes { get; }
-    public XmlElement RootElement { get; }
+    public List<XmlAttribute> HeaderAttributes { get; } = headerAttributes;
+    public XmlElement RootElement { get; } = rootElement;
 }

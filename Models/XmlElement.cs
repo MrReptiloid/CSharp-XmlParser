@@ -1,12 +1,9 @@
-﻿using System.CodeDom;
-using System.Xml.Schema;
-
-namespace XmlParser;
+﻿namespace XmlParser.Models;
 
 public class XmlElement
 {
     public string? TagName { get; set; }
-    public List<Attribute> Attributes { get; set; }
+    public List<XmlAttribute> Attributes { get; set; }
     public List<XmlElement> Children { get; set; } = new List<XmlElement>();
     public string? Value { get; set; }
     public bool IsSelfClosing { get; set; }

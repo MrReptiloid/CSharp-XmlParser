@@ -1,23 +1,18 @@
-﻿namespace XmlParser.Interpret;
+﻿using XmlParser.Models;
 
-public class TextExpression : IExpression
+namespace XmlParser.Interpret;
+
+public class TextExpression(string textValue) : IExpression
 {
-    private readonly string _textValue;
-
-    public TextExpression(string textValue)
-    {
-        _textValue = textValue;
-    }
-
     public List<XmlElement> Interpret(XmlElement context)
     {
-        var result = new List<XmlElement>();
+        List<XmlElement> result = new List<XmlElement>();
         
-        if (context.Value != null && context.Value.Contains(_textValue))
+        if (context.Value != null && context.Value.Contains(textValue))
             result.Add(context);
 
         foreach (var child in context.Children)
-            result.AddRange(new TextExpression(_textValue).Interpret(child));
+            result.AddRange(new TextExpression(textValue).Interpret(child));
 
         return result;
     }

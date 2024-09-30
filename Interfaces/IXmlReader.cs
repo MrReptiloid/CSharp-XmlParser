@@ -1,4 +1,4 @@
-﻿namespace XmlParser.Intefaces;
+﻿namespace XmlParser.Interfaces;
 
 public interface IXmlReader
 {

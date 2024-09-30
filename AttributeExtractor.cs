@@ -1,20 +1,22 @@
 ﻿using System.Text.RegularExpressions;
-using XmlParser.Intefaces;
+using XmlParser.Interfaces;
+using XmlParser.Models;
 
 namespace XmlParser;
 
 public class AttributeExtractor : IAttributeExtractor
 {
     private const string AttributePattern = @"(\w+)\s*=\s*""([^""]*)""";
+    private readonly Regex _regex = new Regex(AttributePattern, RegexOptions.Compiled);
 
-    public List<Attribute> ExtractAttributes(string attributesString)
+    public List<XmlAttribute> ExtractAttributes(string attributesString)
     {
-        MatchCollection matches = Regex.Matches(attributesString, AttributePattern);
-        var result = new List<Attribute>();
+        MatchCollection matches = _regex.Matches(attributesString);
+        List<XmlAttribute> result = new List<XmlAttribute>(matches.Count);
 
         foreach (Match match in matches)
         {
-            result.Add(new Attribute(
+            result.Add(new XmlAttribute(
                 match.Groups[1].Value,
                 match.Groups[2].Value));
         }

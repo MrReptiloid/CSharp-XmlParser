@@ -1,6 +1,6 @@
-﻿using System.Text;
+﻿using XmlParser.Models;
 
-namespace XmlParser;
+namespace XmlParser.Interfaces;
 
 public interface IXmlParser
 {

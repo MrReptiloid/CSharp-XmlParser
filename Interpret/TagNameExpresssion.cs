@@ -1,23 +1,18 @@
-﻿namespace XmlParser.Interpret;
+﻿using XmlParser.Models;
 
-public class TagNameExpression : IExpression 
+namespace XmlParser.Interpret;
+
+public class TagNameExpression(string tagName) : IExpression
 {
-    private readonly string _tagName;
-
-    public TagNameExpression(string tagName)
-    {
-        _tagName = tagName;
-    }
-
     public List<XmlElement> Interpret(XmlElement context)
     {
-        var result = new List<XmlElement>();
+        List<XmlElement> result = new List<XmlElement>();
 
-        if (context.TagName == _tagName)
+        if (context.TagName == tagName)
             result.Add(context);
 
         foreach (var child in context.Children)
-            result.AddRange(new TagNameExpression(_tagName).Interpret(child));
+            result.AddRange(new TagNameExpression(tagName).Interpret(child));
 
         return result;
     }

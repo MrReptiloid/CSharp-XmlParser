@@ -1,4 +1,6 @@
-﻿namespace XmlParser.Interpret;
+﻿using XmlParser.Models;
+
+namespace XmlParser.Interpret;
 
 public class AndExpression : IExpression
 {
@@ -13,8 +15,8 @@ public class AndExpression : IExpression
 
     public List<XmlElement> Interpret(XmlElement context)
     {
-        var result1 = _expression1.Interpret(context);
-        var result2 = _expression2.Interpret(context);
+        List<XmlElement> result1 = _expression1.Interpret(context);
+        List<XmlElement> result2 = _expression2.Interpret(context);
 
         return result1.Intersect(result2).ToList();
     }

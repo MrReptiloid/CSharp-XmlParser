@@ -1,4 +1,6 @@
-﻿namespace XmlParser.Interpret;
+﻿using XmlParser.Models;
+
+namespace XmlParser.Interpret;
 
 public interface IExpression
 {

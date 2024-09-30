@@ -1,4 +1,4 @@
-﻿using XmlParser.Intefaces;
+﻿using XmlParser.Interfaces;
 
 namespace XmlParser;
 

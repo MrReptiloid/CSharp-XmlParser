@@ -1,22 +1,15 @@
-﻿using XmlParser.Intefaces;
+﻿using XmlParser.Interfaces;
+using XmlParser.Models;
 
 namespace XmlParser;
 
-public class XmlParser : IXmlParser
+public class XmlParser(IXmlReader xmlReader, IXmlElementParser elementParser) : IXmlParser
 {
-    private readonly IXmlReader _xmlReader;
-    private readonly IXmlElementParser _elementParser;
-
-    public XmlParser(IXmlReader xmlReader, IXmlElementParser elementParser)
-    {
-        _xmlReader = xmlReader;
-        _elementParser = elementParser;
-    }
-    
     public XmlDocument Parse(string path)
     {
-        var xmlData = _xmlReader.Read(path);
-        var rootElement = _elementParser.Parse(xmlData);
+        string xmlData = xmlReader.Read(path);
+        (List<XmlAttribute> headerAttributes, XmlElement root) rootElement =
+            elementParser.Parse(xmlData);
         
         return new XmlDocument(
             rootElement.headerAttributes,
