@@ -6,19 +6,33 @@ namespace XmlParser;
 
 public class AttributeExtractor : IAttributeExtractor
 {
-    private const string AttributePattern = @"(\w+)\s*=\s*""([^""]*)""";
+    private const string AttributePattern = @"(?<name>\w+)\s*=\s*""(?<value>[^""]*)""";
     private readonly Regex _regex = new Regex(AttributePattern, RegexOptions.Compiled);
-
+    
     public List<XmlAttribute> ExtractAttributes(string attributesString)
     {
-        MatchCollection matches = _regex.Matches(attributesString);
+        if (string.IsNullOrWhiteSpace(attributesString))
+            return new List<XmlAttribute>();
+        
+        MatchCollection matches;
+        try
+        {
+            matches = _regex.Matches(attributesString);
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            return new List<XmlAttribute>();
+        }
+        
         List<XmlAttribute> result = new List<XmlAttribute>(matches.Count);
 
         foreach (Match match in matches)
         {
-            result.Add(new XmlAttribute(
-                match.Groups[1].Value,
-                match.Groups[2].Value));
+            Group nameGroup = match.Groups["name"];
+            Group valueGroup = match.Groups["value"];
+
+            if (nameGroup.Success && valueGroup.Success)
+                result.Add(new XmlAttribute(nameGroup.Value, valueGroup.Value));
         }
 
         return result;

@@ -15,61 +15,84 @@ public class XmlElementParser(IRegexStore regexStore, IAttributeExtractor attrib
         
         while (true)
         {
-            Match headerMatch = regexStore.HeaderRegex.Match(xmlData);
-            Match selfClosingTagMatch = regexStore.SelfClosingTagRegex.Match(xmlData);
-            Match openTagMatch = regexStore.OpenTagRegex.Match(xmlData);
-            Match closeTagMatch = regexStore.CloseTagRegex.Match(xmlData);
-            Match textMatch = regexStore.TextRegex.Match(xmlData);
-            
             Match? firstMatch = GetFirstMatch(
-                headerMatch,
-                selfClosingTagMatch,
-                openTagMatch,
-                closeTagMatch,
-                textMatch);
+                regexStore.HeaderRegex.Match(xmlData),
+                regexStore.SelfClosingTagRegex.Match(xmlData),
+                regexStore.OpenTagRegex.Match(xmlData),
+                regexStore.CloseTagRegex.Match(xmlData),
+                regexStore.TextRegex.Match(xmlData));
             
             if (firstMatch is null)
                 return (headerAttributes, root);
             
+            switch (firstMatch)
+            {
+                case var a when firstMatch.Value == regexStore.HeaderRegex.Match(xmlData).Value:
+                    headerAttributes = ParseHeader(a);
+                    break;
+                case var _ when firstMatch.Value == regexStore.SelfClosingTagRegex.Match(xmlData).Value:
+                    HandleSelfClosingTag(firstMatch, ref root, elements); 
+                    break;
+                case var _ when firstMatch.Value == regexStore.OpenTagRegex.Match(xmlData).Value:
+                    HandleOpenTag(firstMatch, ref root, elements);
+                    break;
+                case var _ when firstMatch.Value == regexStore.TextRegex.Match(xmlData).Value:
+                    HandleText(firstMatch, elements);
+                    break;
+                case var _ when firstMatch.Value == regexStore.CloseTagRegex.Match(xmlData).Value:
+                    HandleCloseTag(elements);
+                    break;
+                default:
+                    return (headerAttributes, root);
+            }
+            
             xmlData = xmlData.RemoveFirstOccurrence(firstMatch.Value);
-
-            if (firstMatch.Index == selfClosingTagMatch.Index)
-            {
-                XmlElement element = TagParse(selfClosingTagMatch);
-                element.IsSelfClosing = true;
-                
-                if (root is null) root = element;
-                else elements.Peek().Children.Add(element);
-            }
-            else if (firstMatch.Index == openTagMatch.Index)
-            {
-                XmlElement element = TagParse(openTagMatch);
-                if (root is null) root = element;
-                else elements.Peek().Children.Add(element);
-
-                elements.Push(element);
-            }
-            else if (firstMatch.Index == headerMatch.Index)
-            {
-                headerAttributes = HeaderParse(headerMatch);
-            }
-            else if (firstMatch.Index == textMatch.Index)
-            {
-                TextParse(textMatch, ref elements);
-            }
-            else if (firstMatch.Index == closeTagMatch.Index)
-            {
-                elements.Pop();
-            }
-            else return (headerAttributes, root);
         }
+    }
+
+    private void HandleSelfClosingTag(Match match, ref XmlElement? root, Stack<XmlElement> elements)
+    {
+        XmlElement element = TagParse(match);
+        element.IsSelfClosing = true;
+
+        if (root is null)
+            root = element;
+        else
+            elements.Peek().Children.Add(element);
+    }
+    
+    private List<XmlAttribute> ParseHeader(Match headerContent) => 
+        attributeExtractor.ExtractAttributes(headerContent.Groups[0].Value);
+
+    private void HandleOpenTag(Match match, ref XmlElement? root, Stack<XmlElement> elements)
+    {
+        XmlElement element = TagParse(match);
+
+        if (root is null)
+            root = element;
+        else
+            elements.Peek().Children.Add(element);
+        
+        elements.Push(element);
+    }
+
+    private void HandleText(Match match, Stack<XmlElement> elements)
+    {
+        string textValue = match.Groups[1].Value.Trim();
+
+        if (textValue.Length > 0 && elements.Count > 0)
+            elements.Peek().Value = textValue;
+    }
+
+    private void HandleCloseTag(Stack<XmlElement> elements)
+    {
+        if (elements.Count > 0)
+            elements.Pop();
     }
     
     private Match? GetFirstMatch(params Match[] matches) =>
         matches.Where(m => m.Success).MinBy(m => m.Index);
 
-    private List<XmlAttribute> HeaderParse(Match headerContent) => 
-        attributeExtractor.ExtractAttributes(headerContent.Groups[0].Value);
     
     private XmlElement TagParse(Match tagContent)
     {
@@ -82,12 +105,5 @@ public class XmlElementParser(IRegexStore regexStore, IAttributeExtractor attrib
         };
 
         return element;
-    }
-
-    private void TextParse(Match textMatch, ref Stack<XmlElement> elements)
-    {
-        string textValue = textMatch.Groups[1].Value.Trim();
-        if (textValue.Length > 0 && elements.Count > 0)
-            elements.Peek().Value = textValue;
     }
 }

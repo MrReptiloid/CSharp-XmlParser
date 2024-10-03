@@ -15,8 +15,8 @@ public class Program
         XmlElementParser elementParser = new XmlElementParser(regexStore, attributeExtractor);
 
         XmlParser xmlParser = new XmlParser(xmlReader, elementParser);
-        XmlDocument xmlDocument = xmlParser.Parse("../../../Data/test.xml");
+        XmlDocument? xmlDocument = xmlParser.Parse("../../../Data/test.xml");
 
-        xmlDocument.WriteYaml();
+        xmlDocument?.WriteYaml();
     }
 }

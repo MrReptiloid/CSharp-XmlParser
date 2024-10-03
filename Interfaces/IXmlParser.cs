@@ -4,5 +4,5 @@ namespace XmlParser.Interfaces;
 
 public interface IXmlParser
 {
-    public XmlDocument Parse(string path);
+    public XmlDocument? Parse(string path);
 }
