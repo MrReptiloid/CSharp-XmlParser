@@ -9,10 +9,14 @@ public class TagNameExpression(string tagName) : IExpression
         List<XmlElement> result = new List<XmlElement>();
 
         if (context.TagName == tagName)
+        {
             result.Add(context);
+        }
 
-        foreach (var child in context.Children)
+        foreach (var child in context.Childrens)
+        {
             result.AddRange(new TagNameExpression(tagName).Interpret(child));
+        }
 
         return result;
     }

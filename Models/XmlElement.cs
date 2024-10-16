@@ -3,8 +3,8 @@
 public class XmlElement
 {
     public string? TagName { get; set; }
-    public List<XmlAttribute> Attributes { get; set; }
-    public List<XmlElement> Children { get; set; } = new List<XmlElement>();
+    public List<XmlAttribute>? Attributes { get; set; }
+    public List<XmlElement>? Childrens { get; set; } = new();
     public string? Value { get; set; }
     public bool IsSelfClosing { get; set; }
 
@@ -18,7 +18,7 @@ public class XmlElement
         if(!string.IsNullOrEmpty(element.Value))
             Console.WriteLine(new string(' ', (indent + 1) *2 ) + element.Value);
 
-        foreach (var child in element.Children)
+        foreach (var child in element.Childrens)
             Print(child, indent + 1);
     }
 }  

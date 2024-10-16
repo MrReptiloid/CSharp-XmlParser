@@ -6,13 +6,17 @@ public class TextExpression(string textValue) : IExpression
 {
     public List<XmlElement> Interpret(XmlElement context)
     {
-        List<XmlElement> result = new List<XmlElement>();
-        
-        if (context.Value != null && context.Value.Contains(textValue))
-            result.Add(context);
+        List<XmlElement> result = [];
 
-        foreach (var child in context.Children)
+        if (context.Value != null && context.Value.Contains(textValue))
+        {
+            result.Add(context);
+        }
+
+        foreach (var child in context.Childrens)
+        {
             result.AddRange(new TextExpression(textValue).Interpret(child));
+        }
 
         return result;
     }

@@ -3,20 +3,18 @@ using XmlParser.Models;
 
 namespace XmlParser;
 
-public class XmlParser(IXmlReader xmlReader, IXmlElementParser elementParser) : IXmlParser
+public sealed class XmlParser(IXmlReader xmlReader, IXmlElementParser elementParser) : IXmlParser
 {
     public XmlDocument? Parse(string path)
     {
-        string xmlData = xmlReader.Read(path);
-
         try
         {
-            (List<XmlAttribute> headerAttributes, XmlElement root) rootElement =
-                elementParser.Parse(xmlData);
+            string xmlData = xmlReader.Read(path);
+            ParseResult result = elementParser.Parse(xmlData);
 
             return new XmlDocument(
-                rootElement.headerAttributes,
-                rootElement.root);
+                result.HeaderAttributes,
+                result.Root);
         }
         catch (Exception ex)
         {

@@ -12,7 +12,7 @@ public class Program
         IRegexStore regexStore = new RegexStore();
         IAttributeExtractor attributeExtractor = new AttributeExtractor();
         
-        XmlElementParser elementParser = new XmlElementParser(regexStore, attributeExtractor);
+        XmlElementParser elementParser = new XmlElementParser(attributeExtractor, regexStore);
 
         XmlParser xmlParser = new XmlParser(xmlReader, elementParser);
         XmlDocument? xmlDocument = xmlParser.Parse("../../../Data/test.xml");
